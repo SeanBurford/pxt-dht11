@@ -145,7 +145,9 @@ namespace DHT11 {
     export function create(datapin: DigitalPin): Dht11 {
         let dht11 = new Dht11();
         dht11.setPin(datapin);
-        dht11.useCelsius()
+        dht11.useCelsius();
+        dht11.readTimestamp = 0;
+        dht11.readValue = 0;
         return dht11;
     }
 }
