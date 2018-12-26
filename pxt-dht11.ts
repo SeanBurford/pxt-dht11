@@ -4,13 +4,8 @@
  */
 
 enum DHT11Type {
-    //% block="temperature(℃)" enumval=0
     temperature_C,
-
-    //% block="temperature(℉)" enumval=1
     temperature_F,
-
-    //% block="humidity(0~100)" enumval=2
     humidity,
 }
 
@@ -76,15 +71,19 @@ namespace DHT11 {
         }
 
         /**
+         * Read and return the temperature.
          * @param isCelsius True if you want celsius, false for Fahrenheit.
          */
-        //% blockId="temperature" block="temperature"
+        //% blockId="temperature" block="%dht11Block|temperature" blockGap=8
         temperature(isCelsius: boolean): number {
             let isC = isCelsius ? DHT11Type.temperature_C : DHT11Type.temperature_F;
             return this.convert(this.read(), isC);
         }
 
-        //% blockId="humidity" block="humidity"
+        /**
+         * Read and return the humidity.
+         */
+        //% blockId="humidity" block="%dht11Block|humidity" blockGap=8
         humidity(): number {
             return this.convert(this.read(), DHT11Type.humidity);
         }
@@ -109,7 +108,7 @@ namespace DHT11 {
     //% weight=90 blockGap=8
     //% parts="DHT11"
     //% trackArgs=0
-    //% blockSetVariable=dht11
+    //% blockSetVariable=dht11Block
     export function create(datapin: DigitalPin): Dht11 {
         let dht11 = new Dht11();
         dht11.setPin(datapin);
