@@ -15,8 +15,9 @@ namespace DHT11 {
          * A DHT11 temperature and humidity sensor.
          */
 
-        // The pin where the DHT11 is connected, defaults to P0.
-        pin: DigitalPin;
+        // The pins where the DHT11 is connected, defaults to P0.
+        _drivepin: DigitalPin;
+        _readpin: DigitalPin;
         isCelsius: boolean;
         readTimestamp: number;
         readValue: number;
@@ -43,12 +44,10 @@ namespace DHT11 {
             let value = 0;
 
             this._pulseCount = 0;
-            pins.digitalWritePin(this.pin, 0)
-            let unusedI = pins.digitalReadPin(this.pin)
-            pins.onPulsed(this.pin, PulseValue.High, () => this.readPulse());
 
+            pins.digitalWritePin(this._drivepin, 0)
             basic.pause(18)
-            pins.setPull(this.pin, PinPullMode.PullUp);
+            pins.setPull(this._drivepin, PinPullMode.PullUp);
 
             while (this._pulseCount < 40 && (input.runningTime() - now < 100)) {
                 basic.pause(1);
@@ -117,13 +116,16 @@ namespace DHT11 {
 
         /**
          * Set the pin where the DHT11 is connected.
-         * @param pin The pin where the DHT11 is connected.
+         * @param drivepin DigitalPin 1st connected to DHT11 data line.
+         * @param readpin DigitalPin 2nd connected to DHT11 data line.
          */
-        //% block="%dht11 at pin %pin" advanced=true
-        setPin(pin: DigitalPin): void {
-            this.pin = pin;
-            let unusedI = pins.digitalReadPin(this.pin);
-            pins.setPull(this.pin, PinPullMode.PullUp);
+        //% block="%dht11 at pin %drivepin and %readpin" advanced=true
+        setPins(drivepin: DigitalPin, readpin: DigitalPin): void {
+            this._drivepin = drivepin;
+            this._readpin = readpin;
+            pins.setPull(this._drivepin, PinPullMode.PullUp);
+            let unusedI = pins.digitalReadPin(this._readpin);
+            pins.onPulsed(this._readpin, PulseValue.High, () => this.readPulse());
         }
 
         /**
@@ -145,14 +147,15 @@ namespace DHT11 {
 
     /**
      * Create a new Dht11 driver.
-     * @param datapin DigitalPin where the DHT11 is connected.
+     * @param drivepin DigitalPin 1st connected to DHT11 data line.
+     * @param readpin DigitalPin 2nd connected to DHT11 data line.
      */
     //% blockId="dht11_create" block="DHT11 at pin %dht11pin"
     //% icon="\uf750" color=190
     //% blockSetVariable=dht11
-    export function create(datapin: DigitalPin): Dht11 {
+    export function create(drivepin: DigitalPin, readpin: DigitalPin): Dht11 {
         let dht11 = new Dht11();
-        dht11.setPin(datapin);
+        dht11.setPins(drivepin, readpin);
         dht11.useCelsius();
         dht11.readTimestamp = 0;
         dht11.readValue = 0;
