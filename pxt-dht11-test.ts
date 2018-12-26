@@ -1,5 +1,6 @@
 {
     let dht11 = DHT11.create(DigitalPin.P0, DigitalPin.P1);
+    dht11.useCelsius();
 
     // Convert DHT11Type.temperature_C
     control.assert(dht11.convert(0x0000ff00, 0) == 255, "0x0000ff00 != 255");
