@@ -41,13 +41,13 @@ namespace DHT11 {
             }
 
             let value = 0;
+
             this._pulseCount = 0;
+            pins.digitalWritePin(this.pin, 0)
+            let unusedI = pins.digitalReadPin(this.pin)
             pins.onPulsed(this.pin, PulseValue.High, () => this.readPulse());
 
-            pins.digitalWritePin(this.pin, 0)
             basic.pause(18)
-
-            let unusedI = pins.digitalReadPin(this.pin)
             pins.setPull(this.pin, PinPullMode.PullUp);
 
             while (this._pulseCount < 40 && (input.runningTime() - now < 100)) {
