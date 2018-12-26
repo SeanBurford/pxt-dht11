@@ -4,7 +4,7 @@
  */
 
 namespace DHT11 {
-    export enum DHT11Type {
+    enum DHT11Type {
         temperature_C,
         temperature_F,
         humidity,
