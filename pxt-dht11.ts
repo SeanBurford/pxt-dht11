@@ -72,14 +72,22 @@ namespace DHT11 {
                     result = value >> 24;
                     break;
             }
-            return Math.floor(result);
+            return Math.trunc(result);
         }
 
         /**
-         * @param value A value read from a DHT11.
-         * @param dht11type Conversion to apply to value.
+         * @param isCelsius True if you want celsius, false for Fahrenheit.
          */
-        //% blockId="readdht11" block="value of dht11 %dht11type|"
+        //% blockId="temperature" block="temperature"
+        temperature(isCelsius: boolean) {
+            let isC = isCelsius ? DHT11Type.temperature_C : DHT11Type.temperature_F;
+            return this.convert(this.read(), isC);
+        }
+
+        //% blockId="humidity" block="humidity"
+        humidity() {
+            return this.convert(this.read(), DHT11Type.humidity);
+        }
 
         /**
          * Set the pin where the DHT11 is connected.

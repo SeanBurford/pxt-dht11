@@ -12,5 +12,6 @@
     "testFiles": [
         "pxt-dht11-test.ts"
     ],
-    "public": false
+    "public": false,
+    "installedVersion": "workspace:39d6735a-5fc5-46ab-11e0-f6b2876c4a98"
 }
