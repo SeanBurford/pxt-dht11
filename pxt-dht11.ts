@@ -79,13 +79,13 @@ namespace DHT11 {
          * @param isCelsius True if you want celsius, false for Fahrenheit.
          */
         //% blockId="temperature" block="temperature"
-        temperature(isCelsius: boolean) {
+        temperature(isCelsius: boolean): number {
             let isC = isCelsius ? DHT11Type.temperature_C : DHT11Type.temperature_F;
             return this.convert(this.read(), isC);
         }
 
         //% blockId="humidity" block="humidity"
-        humidity() {
+        humidity(): number {
             return this.convert(this.read(), DHT11Type.humidity);
         }
 
