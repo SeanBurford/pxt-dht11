@@ -26,6 +26,7 @@ namespace DHT11 {
          */
         read(): number {
             let now = input.runningTime();
+            serial.writeNumbers([now, this.readTimestamp]);
             if (now - this.readTimestamp < 100) {
                 // Use the previous read if it is less than 100ms old.
                 serial.writeString("Using cached value\r\n")
