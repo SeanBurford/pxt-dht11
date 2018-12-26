@@ -3,13 +3,12 @@
  * Read more at https://makecode.microbit.org/blocks/custom
  */
 
-enum DHT11Type {
-    temperature_C,
-    temperature_F,
-    humidity,
-}
-
 namespace DHT11 {
+    export enum DHT11Type {
+        temperature_C,
+        temperature_F,
+        humidity,
+    }
 
     export class Dht11 {
         /**
@@ -18,6 +17,7 @@ namespace DHT11 {
 
         // The pin where the DHT11 is connected, defaults to P0.
         pin: DigitalPin;
+        isCelsius: boolean;
 
         /**
          * Read a temperature and humidity value from the DHT11.
@@ -75,8 +75,8 @@ namespace DHT11 {
          * @param isCelsius True if you want celsius, false for Fahrenheit.
          */
         //% blockId="temperature" block="%dht11Block|temperature" blockGap=8
-        temperature(isCelsius: boolean): number {
-            let isC = isCelsius ? DHT11Type.temperature_C : DHT11Type.temperature_F;
+        temperature(): number {
+            let isC = this.isCelsius ? DHT11Type.temperature_C : DHT11Type.temperature_F;
             return this.convert(this.read(), isC);
         }
 
@@ -92,11 +92,29 @@ namespace DHT11 {
          * Set the pin where the DHT11 is connected.
          */
         //% weight=10
-        //% parts="DHT11" advanced=true
+        //% parts="Dht11" advanced=true
         setPin(pin: DigitalPin): void {
             this.pin = pin;
             let unusedI = pins.digitalReadPin(this.pin);
             pins.setPull(this.pin, PinPullMode.PullUp);
+        }
+
+        /**
+         * Convert temperatures to Celsius.
+         */
+        //% weight=10
+        //% parts="Dht11" advanced=true
+        useCelsius(): void {
+            this.isCelsius = true;
+        }
+
+        /**
+         * Convert temperatures to Fahrenheit.
+         */
+        //% weight=10
+        //% parts="Dht11" advanced=true
+        useFahrenheit(): void {
+            this.isCelsius = false;
         }
     }
 
@@ -112,6 +130,7 @@ namespace DHT11 {
     export function create(datapin: DigitalPin): Dht11 {
         let dht11 = new Dht11();
         dht11.setPin(datapin);
+        dht11.useCelsius()
         return dht11;
     }
 }
