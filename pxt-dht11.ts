@@ -76,8 +76,10 @@ namespace DHT11 {
          */
         //% blockId="temperature" block="%dht11|temperature"
         temperature(): number {
+            let val = this.read();
             let isC = this.isCelsius ? DHT11Type.temperature_C : DHT11Type.temperature_F;
-            return this.convert(this.read(), isC);
+            serial.writeString("Reading temperature " + val.toString())
+            return this.convert(val, isC);
         }
 
         /**
@@ -85,7 +87,9 @@ namespace DHT11 {
          */
         //% blockId="humidity" block="%dht11|humidity"
         humidity(): number {
-            return this.convert(this.read(), DHT11Type.humidity);
+            let val = this.read();
+            serial.writeString("Reading humidity " + val.toString())
+            return this.convert(val, DHT11Type.humidity);
         }
 
         /**
@@ -121,7 +125,7 @@ namespace DHT11 {
      * @param datapin DigitalPin where the DHT11 is connected.
      */
     //% blockId="dht11_create" block="DHT11 at pin %dht11pin"
-    //% icon="\f750"
+    //% icon="\uf750" color=190
     //% blockSetVariable=dht11
     export function create(datapin: DigitalPin): Dht11 {
         let dht11 = new Dht11();
