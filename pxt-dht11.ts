@@ -24,7 +24,6 @@ namespace DHT11 {
          */
         read(): number {
             let value = 0;
-
             pins.digitalWritePin(this.pin, 0)
             basic.pause(18)
 
@@ -76,9 +75,10 @@ namespace DHT11 {
          */
         //% blockId="temperature" block="%dht11|temperature"
         temperature(): number {
+            serial.writeString("Reading\n")
             let val = this.read();
             let isC = this.isCelsius ? DHT11Type.temperature_C : DHT11Type.temperature_F;
-            serial.writeString("Reading temperature " + val.toString())
+            serial.writeString("Calculating temperature " + val.toString() + "\n")
             return this.convert(val, isC);
         }
 
@@ -87,8 +87,9 @@ namespace DHT11 {
          */
         //% blockId="humidity" block="%dht11|humidity"
         humidity(): number {
+            serial.writeString("Reading\n")
             let val = this.read();
-            serial.writeString("Reading humidity " + val.toString())
+            serial.writeString("Calculating humidity " + val.toString() + "\n")
             return this.convert(val, DHT11Type.humidity);
         }
 
