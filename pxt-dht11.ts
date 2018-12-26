@@ -92,7 +92,7 @@ namespace DHT11 {
          * Set the pin where the DHT11 is connected.
          * @param pin The pin where the DHT11 is connected.
          */
-        //% block advanced=true
+        //% block="%dht11 at pin %pin" advanced=true
         setPin(pin: DigitalPin): void {
             this.pin = pin;
             let unusedI = pins.digitalReadPin(this.pin);
@@ -102,7 +102,7 @@ namespace DHT11 {
         /**
          * Convert temperatures to Celsius.
          */
-        //% block advanced=true
+        //% block="%dht11 temperatures in Celsius" advanced=true
         useCelsius(): void {
             this.isCelsius = true;
         }
@@ -110,7 +110,7 @@ namespace DHT11 {
         /**
          * Convert temperatures to Fahrenheit.
          */
-        //% block advanced=true
+        //% block="%dht11 temperatures in Fahrenheit" advanced=true
         useFahrenheit(): void {
             this.isCelsius = false;
         }
