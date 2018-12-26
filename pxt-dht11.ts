@@ -21,6 +21,13 @@ namespace DHT11 {
         readTimestamp: number;
         readValue: number;
 
+        _pulseCount: number;
+
+        readPulse(): void {
+            let duration = pins.pulseDuration();
+            this._pulseCount += 1;
+        }
+
         /**
          * Read a temperature and humidity value from the DHT11.
          */
@@ -32,34 +39,35 @@ namespace DHT11 {
                 serial.writeString("Using cached value\r\n")
                 return this.readValue;
             }
+
             let value = 0;
+            this._pulseCount = 0;
+            pins.onPulsed(this.pin, PulseValue.High, () => this.readPulse());
+
             pins.digitalWritePin(this.pin, 0)
             basic.pause(18)
 
             let unusedI = pins.digitalReadPin(this.pin)
             pins.setPull(this.pin, PinPullMode.PullUp);
 
-            while (pins.digitalReadPin(this.pin) == 1);
-            while (pins.digitalReadPin(this.pin) == 0);
-            while (pins.digitalReadPin(this.pin) == 1);
-
-            let counter = 0;
-            let counters: number[] = [];
-            for (let i = 0; i <= 32 - 1; i++) {
-                while (pins.digitalReadPin(this.pin) == 0);
-                counter = 0
-                while (pins.digitalReadPin(this.pin) == 1) {
-                    counter += 1;
-                }
-                if (counter > 4) {
-                    value = value + (1 << (31 - i));
-                }
-                counters.push(counter)
+            while (this._pulseCount < 40 && (input.runningTime() - now < 100)) {
+                basic.pause(1);
             }
+
+            //let counter = 0;
+            //for (let i = 0; i <= 32 - 1; i++) {
+            //    while (pins.digitalReadPin(this.pin) == 0);
+            //    counter = 0
+            //    while (pins.digitalReadPin(this.pin) == 1) {
+            //        counter += 1;
+            //    }
+            //    if (counter > 2) {
+            //        value = value + (1 << (31 - i));
+            //    }
+            //}
             this.readTimestamp = now;
             this.readValue = value;
-            serial.writeNumbers(counters)
-            return value;
+            return this._pulseCount;
         }
 
         /**
