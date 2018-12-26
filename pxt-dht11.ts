@@ -49,7 +49,7 @@ namespace DHT11 {
             let unusedI = pins.digitalReadPin(this._drivepin);
             pins.setPull(this._drivepin, PinPullMode.PullUp);
 
-            while (this._pulseCount < 40 && (input.runningTime() - now < 100)) {
+            while (this._pulseCount < 40 && (input.runningTime() - now < 600)) {
                 basic.pause(1);
             }
 
@@ -151,7 +151,7 @@ namespace DHT11 {
      * @param drivepin DigitalPin 1st connected to DHT11 data line.
      * @param readpin DigitalPin 2nd connected to DHT11 data line.
      */
-    //% blockId="dht11_create" block="DHT11 at pin %drivepin and %readpin"
+    //% blockId="dht11_create" block="DHT11 drive %drivepin and read %readpin"
     //% icon="\uf750" color=190
     //% blockSetVariable=dht11
     export function create(drivepin: DigitalPin, readpin: DigitalPin): Dht11 {
