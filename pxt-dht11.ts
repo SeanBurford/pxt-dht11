@@ -74,7 +74,7 @@ namespace DHT11 {
          * Read and return the temperature.
          * @param isCelsius True if you want celsius, false for Fahrenheit.
          */
-        //% blockId="temperature" block="%dht11Block|temperature" blockGap=8
+        //% blockId="temperature" block="%dht11|temperature"
         temperature(): number {
             let isC = this.isCelsius ? DHT11Type.temperature_C : DHT11Type.temperature_F;
             return this.convert(this.read(), isC);
@@ -83,16 +83,16 @@ namespace DHT11 {
         /**
          * Read and return the humidity.
          */
-        //% blockId="humidity" block="%dht11Block|humidity" blockGap=8
+        //% blockId="humidity" block="%dht11|humidity"
         humidity(): number {
             return this.convert(this.read(), DHT11Type.humidity);
         }
 
         /**
          * Set the pin where the DHT11 is connected.
+         * @param pin The pin where the DHT11 is connected.
          */
-        //% weight=10
-        //% parts="Dht11" advanced=true
+        //% block advanced=true
         setPin(pin: DigitalPin): void {
             this.pin = pin;
             let unusedI = pins.digitalReadPin(this.pin);
@@ -102,8 +102,7 @@ namespace DHT11 {
         /**
          * Convert temperatures to Celsius.
          */
-        //% weight=10
-        //% parts="Dht11" advanced=true
+        //% block advanced=true
         useCelsius(): void {
             this.isCelsius = true;
         }
@@ -111,8 +110,7 @@ namespace DHT11 {
         /**
          * Convert temperatures to Fahrenheit.
          */
-        //% weight=10
-        //% parts="Dht11" advanced=true
+        //% block advanced=true
         useFahrenheit(): void {
             this.isCelsius = false;
         }
@@ -123,10 +121,8 @@ namespace DHT11 {
      * @param datapin DigitalPin where the DHT11 is connected.
      */
     //% blockId="dht11_create" block="DHT11 at pin %dht11pin"
-    //% weight=90 blockGap=8
-    //% parts="DHT11"
-    //% trackArgs=0
-    //% blockSetVariable=dht11Block
+    //% icon="\f750"
+    //% blockSetVariable=dht11
     export function create(datapin: DigitalPin): Dht11 {
         let dht11 = new Dht11();
         dht11.setPin(datapin);
