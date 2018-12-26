@@ -1,13 +1,16 @@
 {
     "name": "pxt-dht11",
     "version": "0.0.20",
-    "description": "",
+    "description": "Support for the DHT11 humidity/temperature sensor",
+    "license": "MIT",
     "dependencies": {
         "core": "*"
     },
     "files": [
         "README.md",
-        "pxt-dht11.ts"
+        "pxt-dht11.ts",
+        "pxt-dht11.cpp",
+        "pxt-dht11.h"
     ],
     "testFiles": [
         "pxt-dht11-test.ts"
