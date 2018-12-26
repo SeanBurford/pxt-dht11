@@ -18,11 +18,18 @@ namespace DHT11 {
         // The pin where the DHT11 is connected, defaults to P0.
         pin: DigitalPin;
         isCelsius: boolean;
+        readTimestamp: number;
+        readValue: number;
 
         /**
          * Read a temperature and humidity value from the DHT11.
          */
         read(): number {
+            let now = input.runningTime();
+            if (now - this.readTimestamp < 100) {
+                // Use the previous read if it is less than 100ms old.
+                return this.readValue;
+            }
             let value = 0;
             pins.digitalWritePin(this.pin, 0)
             basic.pause(18)
@@ -45,6 +52,8 @@ namespace DHT11 {
                     value = value + (1 << (31 - i));
                 }
             }
+            this.readTimestamp = now;
+            this.readValue = value;
             return value;
         }
 
@@ -75,10 +84,10 @@ namespace DHT11 {
          */
         //% blockId="temperature" block="%dht11|temperature"
         temperature(): number {
-            serial.writeString("Reading\n")
+            serial.writeString("Reading\r\n")
             let val = this.read();
             let isC = this.isCelsius ? DHT11Type.temperature_C : DHT11Type.temperature_F;
-            serial.writeString("Calculating temperature " + val.toString() + "\n")
+            serial.writeString("Calculating temperature " + val.toString() + "\r\n")
             return this.convert(val, isC);
         }
 
@@ -87,9 +96,9 @@ namespace DHT11 {
          */
         //% blockId="humidity" block="%dht11|humidity"
         humidity(): number {
-            serial.writeString("Reading\n")
+            serial.writeString("Reading\r\n")
             let val = this.read();
-            serial.writeString("Calculating humidity " + val.toString() + "\n")
+            serial.writeString("Calculating humidity " + val.toString() + "\r\n")
             return this.convert(val, DHT11Type.humidity);
         }
 
