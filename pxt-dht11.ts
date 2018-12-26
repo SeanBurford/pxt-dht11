@@ -27,7 +27,7 @@ namespace DHT11 {
         read(): number {
             let now = input.runningTime();
             serial.writeNumbers([now, this.readTimestamp]);
-            if (now - this.readTimestamp < 100) {
+            if (now - this.readTimestamp < 900) {
                 // Use the previous read if it is less than 100ms old.
                 serial.writeString("Using cached value\r\n")
                 return this.readValue;
@@ -44,6 +44,7 @@ namespace DHT11 {
             while (pins.digitalReadPin(this.pin) == 1);
 
             let counter = 0;
+            let counters: number[] = [];
             for (let i = 0; i <= 32 - 1; i++) {
                 while (pins.digitalReadPin(this.pin) == 0);
                 counter = 0
@@ -53,9 +54,11 @@ namespace DHT11 {
                 if (counter > 4) {
                     value = value + (1 << (31 - i));
                 }
+                counters.push(counter)
             }
             this.readTimestamp = now;
             this.readValue = value;
+            serial.writeNumbers(counters)
             return value;
         }
 
