@@ -5,62 +5,106 @@
 
 enum DHT11Type {
     //% block="temperature(℃)" enumval=0
-    DHT11_temperature_C,
+    temperature_C,
 
     //% block="temperature(℉)" enumval=1
-    DHT11_temperature_F,
+    temperature_F,
 
     //% block="humidity(0~100)" enumval=2
-    DHT11_humidity,
+    humidity,
 }
 
 namespace DHT11 {
-    /**
-     * A DHT11 temperature and humidity sensor.
-     */
 
-    /**
-     * @param dht11type DHT11Type for block that has requested a value.
-     * @param dht11pin DigitalPin attached to the data line.
-     */
-    //% blockId="readdht11" block="value of dht11 %dht11type| at pin %dht11pin"
-    export function read(dht11type: DHT11Type, dht11pin: DigitalPin): number {
-        pins.digitalWritePin(dht11pin, 0)
-        basic.pause(18)
+    export class Dht11 {
+        /**
+         * A DHT11 temperature and humidity sensor.
+         */
 
-        let unusedI = pins.digitalReadPin(dht11pin)
-        pins.setPull(dht11pin, PinPullMode.PullUp);
+        // The pin where the DHT11 is connected, defaults to P0.
+        pin: DigitalPin;
 
-        while (pins.digitalReadPin(dht11pin) == 1);
-        while (pins.digitalReadPin(dht11pin) == 0);
-        while (pins.digitalReadPin(dht11pin) == 1);
+        /**
+         * Read a temperature and humidity value from the DHT11.
+         */
+        read(): number {
+            let value = 0;
 
-        let value = 0;
-        let counter = 0;
+            pins.digitalWritePin(this.pin, 0)
+            basic.pause(18)
 
-        for (let i = 0; i <= 32 - 1; i++) {
-            while (pins.digitalReadPin(dht11pin) == 0);
-            counter = 0
-            while (pins.digitalReadPin(dht11pin) == 1) {
-                counter += 1;
+            let unusedI = pins.digitalReadPin(this.pin)
+            pins.setPull(this.pin, PinPullMode.PullUp);
+
+            while (pins.digitalReadPin(this.pin) == 1);
+            while (pins.digitalReadPin(this.pin) == 0);
+            while (pins.digitalReadPin(this.pin) == 1);
+
+            let counter = 0;
+            for (let i = 0; i <= 32 - 1; i++) {
+                while (pins.digitalReadPin(this.pin) == 0);
+                counter = 0
+                while (pins.digitalReadPin(this.pin) == 1) {
+                    counter += 1;
+                }
+                if (counter > 4) {
+                    value = value + (1 << (31 - i));
+                }
             }
-            if (counter > 4) {
-                value = value + (1 << (31 - i));
-            }
+            return value;
         }
 
-        switch (dht11type) {
-            case 0:
-                return (value & 0x0000ff00) >> 8
-                break;
-            case 1:
-                return ((value & 0x0000ff00) >> 8) * 9 / 5 + 32
-                break;
-            case 2:
-                return value >> 24
-                break;
-            default:
-                return 0
+        /**
+         * Convert a temperature and humidity value to the requested type.
+         * @param value A value read from a DHT11.
+         * @param dht11type DHT11Type for block that has requested a value.
+         */
+        convert(value: number, dht11type: DHT11Type): number {
+            let result = 0;
+            switch (dht11type) {
+                case DHT11Type.temperature_C:
+                    result = (value & 0x0000ff00) >> 8;
+                    break;
+                case DHT11Type.temperature_F:
+                    result = ((value & 0x0000ff00) >> 8) * 9 / 5 + 32;
+                    break;
+                case DHT11Type.humidity:
+                    result = value >> 24;
+                    break;
+            }
+            return Math.floor(result);
         }
+
+        /**
+         * @param value A value read from a DHT11.
+         * @param dht11type Conversion to apply to value.
+         */
+        //% blockId="readdht11" block="value of dht11 %dht11type|"
+
+        /**
+         * Set the pin where the DHT11 is connected.
+         */
+        //% weight=10
+        //% parts="DHT11" advanced=true
+        setPin(pin: DigitalPin): void {
+            this.pin = pin;
+            let unusedI = pins.digitalReadPin(this.pin);
+            pins.setPull(this.pin, PinPullMode.PullUp);
+        }
+    }
+
+    /**
+     * Create a new Dht11 driver.
+     * @param datapin DigitalPin where the DHT11 is connected.
+     */
+    //% blockId="dht11_create" block="DHT11 at pin %dht11pin"
+    //% weight=90 blockGap=8
+    //% parts="DHT11"
+    //% trackArgs=0
+    //% blockSetVariable=dht11
+    export function create(datapin: DigitalPin): Dht11 {
+        let dht11 = new Dht11();
+        dht11.setPin(datapin);
+        return dht11;
     }
 }

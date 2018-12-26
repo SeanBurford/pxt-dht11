@@ -10,7 +10,7 @@
         "pxt-dht11.ts"
     ],
     "testFiles": [
-        "test.ts"
+        "pxt-dht11-test.ts"
     ],
     "public": false
 }
