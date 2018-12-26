@@ -150,7 +150,7 @@ namespace DHT11 {
      * @param drivepin DigitalPin 1st connected to DHT11 data line.
      * @param readpin DigitalPin 2nd connected to DHT11 data line.
      */
-    //% blockId="dht11_create" block="DHT11 at pin %dht11pin"
+    //% blockId="dht11_create" block="DHT11 at pin %drivepin and %readpin"
     //% icon="\uf750" color=190
     //% blockSetVariable=dht11
     export function create(drivepin: DigitalPin, readpin: DigitalPin): Dht11 {
